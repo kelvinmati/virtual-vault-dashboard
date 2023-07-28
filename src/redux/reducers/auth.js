@@ -1,39 +1,38 @@
 import * as types from "../constants";
-
 const initialState = {
-  products: [],
-  product: {},
-
+  isAuthenticated: !!localStorage.getItem("userToken"),
   loading: false,
-  search_results: [],
+  user: null,
 };
 
-export const productsReducer = (state = initialState, action) => {
+export default function AuthReducer(state = initialState, action) {
   switch (action.type) {
     case types.LOADING:
       return {
         ...state,
         loading: true,
       };
-    case types.GET_ALL_PRODUCTS:
+    case types.REGISTER_USER_SUCCESS:
       return {
         ...state,
-        products: action.payload,
         loading: false,
+        user: action.payload,
       };
-    case types.PRODUCTS_SEARCH_RESULTS:
+    case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        search_results: action.payload,
         loading: false,
+        isAuthenticated: true,
+        user: action.payload,
       };
-    case types.CREATE_PRODUCT_SUCCESS:
+    case types.LOGOUT_SUCCESS:
       return {
         ...state,
-        product: action.payload,
+        isAuthenticated: false,
         loading: false,
+        user: null,
       };
     default:
       return state;
   }
-};
+}

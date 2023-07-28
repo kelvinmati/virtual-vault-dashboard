@@ -3,8 +3,8 @@ import { Button, Dropdown } from "antd";
 import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
-    <div className="navbar bg-mainBlue border-b z-50">
-      <div className="  flex   justify-end items-center  w-container_width mx-auto   h-full">
+    <div className="navbar bg-mainBlue text-white border-b z-50   ">
+      {/* <div className="  flex   justify-end items-center  w-container_width mx-auto h-full">
         <div className="cursor-pointer">
           <Dropdown
             menu={{
@@ -19,7 +19,8 @@ const Navbar = () => {
             </span>
           </Dropdown>
         </div>
-      </div>
+        <div>SDSDFC</div>
+      </div> */}
     </div>
   );
 };

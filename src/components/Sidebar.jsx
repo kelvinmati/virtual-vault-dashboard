@@ -1,7 +1,21 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { userLogout } from "../redux/actions.js/auth";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // handle logout
+  const auth = useSelector((state) => state?.auth?.isAuthenticated);
+  useEffect(() => {
+    if (auth) {
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  }, [auth]);
+
   return (
     <div className="sidebar bg-mainBlue text-white ">
       <h1 className="text-xl p-5  h-[60px] border-b text-mainRed">
@@ -60,6 +74,14 @@ const Sidebar = () => {
           </NavLink>
         </li>
       </ul>
+
+      <div
+        className="absolute text-mainRed  w-full bottom-0 flex  p-4 items-center space-x-2"
+        onClick={() => dispatch(userLogout())}
+      >
+        <p className="text-xl">Logout</p>
+        <i class="bx  bx-sm bx-log-out"></i>
+      </div>
     </div>
   );
 };

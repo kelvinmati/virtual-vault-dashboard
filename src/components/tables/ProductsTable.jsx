@@ -1,45 +1,25 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Pagination, Space, Table, Popconfirm } from "antd";
+import {
+  Button,
+  Input,
+  Pagination,
+  Space,
+  Table,
+  Popconfirm,
+  Modal,
+} from "antd";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import Products from "../Products";
-// const data = [
-//   {
-//     key: "1",
-//     name: "John Brown",
-//     age: 32,
-//     address: "New York No. 1 Lake Park",
-//     occupation: "Software developer",
-//   },
-//   {
-//     key: "2",
-//     name: "Joe Black",
-//     age: 42,
-//     address: "London No. 1 Lake Park",
-//     occupation: "Farmer",
-//   },
-//   {
-//     key: "3",
-//     name: "Jim Green",
-//     age: 32,
-//     address: "Sydney No. 1 Lake Park",
-//     occupation: "Doctor",
-//   },
-//   {
-//     key: "4",
-//     name: "Jim Red",
-//     age: 32,
-//     address: "London No. 2 Lake Park",
-//     occupation: "Pilot",
-//   },
-// ];s
-
+import { abbreviateNumber } from "../../utils/AbbreviateNumber";
+import CommonDrawer from "../../utils/Drawer";
 const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
   // console.log("current page ", currentPage);
-  console.log("data  is ", data);
+  // console.log("data  is ", data);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [open, setOpen] = useState(false);
   const searchInput = useRef(null);
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -154,12 +134,35 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
         text
       ),
   });
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const handleAtion = (record) => {
-    console.log("record is", record);
+    // console.log("record is", record);
+    setSelectedRow(record);
   };
-
+  // console.log("selectedRow is", selectedRow);
+  // Function to close the modal
+  const handleModalClose = () => {
+    setSelectedRow(null);
+  };
+  const handleDrawerOpen = () => {
+    setOpen(true);
+    // setSelectedRow(null);
+  };
   const columns = [
+    {
+      title: "Image",
+      dataIndex: "featured_image",
+      key: "featured_image",
+      width: "8%",
+
+      render: (img) => (
+        <img
+          src={img}
+          className="h-14 w-14 object-contain shadow border rounded-full"
+        />
+      ),
+    },
     {
       title: "Name",
       dataIndex: "title",
@@ -184,24 +187,126 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
 
       sorter: (a, b) => a.price.length - b.price.length,
       sortDirections: ["descend", "ascend"],
+      render: (price) => abbreviateNumber(price),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      ...getColumnSearchProps("status"),
+      width: "12%",
+      render: (status) => (
+        <p
+          className={
+            status === "in-stock"
+              ? "bg-green-400 p-1 rounded-full text-center"
+              : status === "out-of-stock"
+              ? "bg-yellow-500 p-1 rounded-full text-center"
+              : ""
+          }
+        >
+          {status}
+        </p>
+      ),
     },
     {
       title: "Action",
       key: "operation",
       fixed: "right",
       width: 100,
-      render: (_, record) => (
+      render: (record) => (
         <div className="relative">
           <button onClick={() => handleAtion(record)}>
-            <i class="bx bx-sm bx-dots-vertical-rounded"></i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+              />
+            </svg>
           </button>
-          {/* <div className="absolute">q</div> */}
+          {/* Modal for displaying the selected row's data */}
+          <div className="">
+            <Modal
+              visible={!!selectedRow}
+              onCancel={handleModalClose}
+              // title="Product Details"
+              footer={null}
+              width={1000}
+            >
+              {selectedRow && (
+                <div className="grid grid-cols-3 gap-10 items-center">
+                  <div className="space-y-3">
+                    <div class="w-full h-96  overflow-hidden">
+                      <img
+                        src={selectedRow.featured_image}
+                        alt="Image"
+                        class="w-full h-full object-cover rounded"
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      {selectedRow?.gallery?.map((image) => {
+                        return (
+                          <div className="w-full rounded-xl h-20 bg-gray-200 overflow-hidden">
+                            <img
+                              className="w-full h-full object-contain"
+                              src={image}
+                              alt=""
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <h2 className="text-mainRed text-xl">
+                      {selectedRow.title}
+                    </h2>
+                    <p>
+                      <span className="text-gray-700 ">SKU :</span>{" "}
+                      <span className="font-bold">{selectedRow.sku}</span>
+                    </p>
+                    <p>
+                      <span className="text-gray-700 ">Price :</span>{" "}
+                      <span className="font-bold">{selectedRow.price}</span>
+                    </p>
+                    <p>
+                      <span className="text-gray-700 ">Quantity :</span>{" "}
+                      <span className="font-bold">{selectedRow.quantity}</span>
+                    </p>
+                    <p>
+                      <span className="text-gray-700 ">Weight :</span>{" "}
+                      <span className="font-bold">{selectedRow.weight}</span>
+                    </p>
+                    <p>
+                      <span className="text-gray-700 ">Category :</span>{" "}
+                      <span className="font-bold">
+                        {selectedRow.categoryId}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="text-gray-700 ">Description :</span>{" "}
+                      <span className="font-bold">
+                        {selectedRow.description}
+                      </span>
+                    </p>
+                    <button
+                      className="px-6 py-3 bg-mainBlue text-white "
+                      onClick={handleDrawerOpen}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Modal>
+          </div>
         </div>
       ),
     },
@@ -245,6 +350,45 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
           // pageSizeOptions={}
         />
       </div>
+      <CommonDrawer
+        width={600}
+        open={open}
+        setOpen={setOpen}
+        drawerTitle="Edit product"
+        content={
+          <form className="space-y-5">
+            <div className="flex flex-col">
+              <label>Name</label>
+              <input
+                type="text"
+                placeholder="product  name"
+                className="p-2 border rounded"
+                defaultValue={selectedRow?.title}
+                // {...register("name", {
+                //   required: "Product name is required!",
+                // })}
+              />
+              {/* <p className="text-mainRed">{errors?.name?.message}</p> */}
+            </div>
+            <div className="flex flex-col">
+              <label>Description</label>
+              <input
+                type="text"
+                placeholder="product description"
+                className="p-2 border rounded"
+                // {...register("description", {
+                //   required: false,
+                // })}
+              />
+            </div>
+            <div>
+              <button className="bg-mainBlue px-5 py-2 text-white rounded-md">
+                Update
+              </button>
+            </div>
+          </form>
+        }
+      />
     </>
   );
 };

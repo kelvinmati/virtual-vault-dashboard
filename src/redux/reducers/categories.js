@@ -1,36 +1,33 @@
 import * as types from "../constants";
 
 const initialState = {
-  products: [],
-  product: {},
-
+  categories: [],
+  category: [],
   loading: false,
-  search_results: [],
 };
 
-export const productsReducer = (state = initialState, action) => {
+export const categoriesReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.LOADING:
       return {
         ...state,
         loading: true,
       };
-    case types.GET_ALL_PRODUCTS:
+    case types.ADD_CATEGORY_SUCCESS:
       return {
         ...state,
-        products: action.payload,
+        category: action.payload,
         loading: false,
       };
-    case types.PRODUCTS_SEARCH_RESULTS:
+    case types.ADD_CATEGORY_FAIL:
       return {
         ...state,
-        search_results: action.payload,
         loading: false,
       };
-    case types.CREATE_PRODUCT_SUCCESS:
+    case types.GET_ALL_CATEGORIES:
       return {
         ...state,
-        product: action.payload,
+        categories: action.payload,
         loading: false,
       };
     default:

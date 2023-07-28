@@ -1,9 +1,13 @@
 import React from "react";
 import OrderTable from "./tables/Table";
 import { abbreviateNumber } from "../utils/AbbreviateNumber";
+import { useSelector } from "react-redux";
 // import OrderTable from "./Table";
 
 const Home = () => {
+  const currentUser = useSelector((state) => state);
+  console.log("currentUser is", currentUser);
+
   return (
     <div className="p-6 space-y-10">
       <h2 className="text-2xl font-bold border-b py-2">Admin Dashboard</h2>
