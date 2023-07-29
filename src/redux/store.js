@@ -9,7 +9,6 @@ import AuthReducer from "./reducers/auth";
 const rootReducer = combineReducers({
   auth: AuthReducer,
   products: productsReducer,
-
   category: categoriesReducer,
   error: errorReducer,
 });

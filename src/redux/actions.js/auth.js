@@ -2,7 +2,7 @@ import axios from "axios";
 import * as types from "../constants";
 import { toast } from "react-hot-toast";
 import { clearErrors, getErrors } from "./errors";
-const AUTH_URL = "http://localhost:7000/api/user";
+const AUTH_URL = "http://81.0.246.169:7000/api/user";
 // REGISTER USER
 export const registerUser = (payload) => async (dispatch) => {
   const {
