@@ -3,7 +3,7 @@ import * as types from "../constants";
 import { toast } from "react-hot-toast";
 import { addCategoryFail, clearErrors, getErrors } from "./errors";
 
-const CATEGORY_URL = "http://localhost:7000/api/category";
+const CATEGORY_URL = "http://81.0.246.169/api/category";
 
 // add new category
 export const addCategory = (payload) => async (dispatch) => {

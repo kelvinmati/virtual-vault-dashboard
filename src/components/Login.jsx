@@ -25,7 +25,7 @@ const Login = () => {
   const onSubmit = (data) => {
     setButtonLoading(true);
     dispatch(userLogin(data));
-    console.log(data);
+    // console.log(data);
   };
   // control button loading
   useEffect(() => {
