@@ -90,6 +90,42 @@ export const userLogin = (payload) => async (dispatch) => {
     toast.error(error.response.data.error);
   }
 };
+// Authentication using the stored token
+export const authToken = () => {
+  // Get token from localStorage
+  const token = localStorage.getItem("userToken");
+  // Headers
+  const config = {
+    headers: {
+      "content-Type": "application/json",
+    },
+  };
+  // if token exist ,add authorizarion
+
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return config;
+};
+
+// auth user
+export const userProfile = () => async (dispatch) => {
+  try {
+    const response = await axios.get(`${AUTH_URL}/profile`, authToken());
+    const data = await response.data;
+    // console.log("data is", data);
+    if (data) {
+      dispatch({
+        type: types.AUTH_USER,
+        payload: data,
+      });
+      console.log("action current user is", data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // user logout
 export const userLogout = () => (dispatch) => {

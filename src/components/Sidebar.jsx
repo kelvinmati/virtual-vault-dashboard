@@ -54,7 +54,7 @@ const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/Orders" activeclassname="active">
+          <NavLink to="/orders" activeclassname="active">
             <div className="flex items-center space-x-2 text-lg">
               <span>
                 <i className="bx bx-sm bx-purchase-tag"></i>

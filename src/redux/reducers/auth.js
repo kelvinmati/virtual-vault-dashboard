@@ -18,6 +18,13 @@ export default function AuthReducer(state = initialState, action) {
         loading: false,
         user: action.payload,
       };
+    case types.AUTH_USER:
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: true,
+        user: action.payload,
+      };
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,

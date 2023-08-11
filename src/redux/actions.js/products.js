@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as types from "../constants";
 
-const PRODUCTS_URL = "http://api.virtualvault.lol/api/product/all";
+const PRODUCTS_URL = "http://api.virtualvault.lol/api/product";
 // get all products
 export const getAllProducts = (page) => async (dispatch) => {
   await dispatch({
