@@ -26,8 +26,7 @@ export const registerUser = (payload) => async (dispatch) => {
     };
     // body
     const body = JSON.stringify({
-      firstname,
-      lastname,
+      name: `${firstname} ${lastname}`,
       email,
       password,
       role,
