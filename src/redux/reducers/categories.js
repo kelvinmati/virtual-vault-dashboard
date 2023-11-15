@@ -2,6 +2,8 @@ import * as types from "../constants";
 
 const initialState = {
   categories: [],
+  categories_by_category_id: [],
+  top_most: [],
   category: [],
   loading: false,
 };
@@ -28,6 +30,18 @@ export const categoriesReducer = (state = initialState, action) => {
       return {
         ...state,
         categories: action.payload,
+        loading: false,
+      };
+    case types.GET_TOP_MOST_CATEGORIES:
+      return {
+        ...state,
+        top_most: action.payload,
+        loading: false,
+      };
+    case types.GET_CATEGORIES_BY_PARENT_ID:
+      return {
+        ...state,
+        categories_by_category_id: action.payload,
         loading: false,
       };
     default:

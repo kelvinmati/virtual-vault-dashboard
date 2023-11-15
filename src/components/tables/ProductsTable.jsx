@@ -187,7 +187,7 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
 
       sorter: (a, b) => a.price.length - b.price.length,
       sortDirections: ["descend", "ascend"],
-      render: (price) => abbreviateNumber(price),
+      render: (price) => price,
     },
     {
       title: "Status",

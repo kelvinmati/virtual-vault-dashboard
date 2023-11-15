@@ -3,6 +3,26 @@ import * as types from "../constants";
 import { toast } from "react-hot-toast";
 import { clearErrors, getErrors } from "./errors";
 const AUTH_URL = "http://api.virtualvault.lol/api/user";
+// const AUTH_URL = "http://localhost:7000/api/user";
+
+// Authentication using the stored token
+export const authToken = () => {
+  // Get token from localStorage
+  const token = localStorage.getItem("userToken");
+  // Headers
+  const config = {
+    headers: {
+      "content-Type": "application/json",
+    },
+  };
+  // if token exist ,add authorizarion
+
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return config;
+};
 // REGISTER USER
 export const registerUser = (payload) => async (dispatch) => {
   const {
@@ -69,8 +89,10 @@ export const userLogin = (payload) => async (dispatch) => {
     // const response = await axios.post(`${AUTH_URL}/signin`, body);
     const response = await axios.post(`${AUTH_URL}/login`, body, config);
     const data = await response.data;
-    const token = await data.data.token;
-    console.log(data);
+    const token = data.token;
+    console.log("Data is", data);
+    console.log("token is", token);
+
     if (data) {
       dispatch({
         type: types.LOGIN_USER_SUCCESS,
@@ -78,6 +100,7 @@ export const userLogin = (payload) => async (dispatch) => {
       });
       // store token to local storage
       localStorage.setItem("userToken", token);
+
       toast.success("Welcome successfully logged in");
       dispatch(clearErrors());
     }
@@ -88,24 +111,6 @@ export const userLogin = (payload) => async (dispatch) => {
     );
     toast.error(error.response.data.error);
   }
-};
-// Authentication using the stored token
-export const authToken = () => {
-  // Get token from localStorage
-  const token = localStorage.getItem("userToken");
-  // Headers
-  const config = {
-    headers: {
-      "content-Type": "application/json",
-    },
-  };
-  // if token exist ,add authorizarion
-
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  return config;
 };
 
 // auth user

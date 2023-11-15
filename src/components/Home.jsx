@@ -13,7 +13,6 @@ const Home = () => {
   useEffect(() => {
     dispatch(userProfile());
   }, []);
-
   return (
     <div className="p-6 space-y-10">
       <h2 className="text-2xl font-bold border-b py-2">Admin Dashboard</h2>
@@ -43,10 +42,10 @@ const Home = () => {
                 <div className={`p-4 ${background} rounded-full`}>{icon}</div>
               </div>
               <div>
-                <span className="inline-block px-2 text-sm text-white bg-green-300 rounded">
+                {/* <span className="inline-block px-2 text-sm text-white bg-green-300 rounded">
                   {percentage}
-                </span>
-                <span className="px-2">from {year}</span>
+                </span> */}
+                {/* <span className="px-2">from {year}</span> */}
               </div>
             </div>
           );
@@ -133,7 +132,7 @@ const stats = [
   },
   {
     id: 2,
-    name: "Orders",
+    name: "Categories",
     icon: (
       <i className="bx bx-purchase-tag text-orange-600 text-center text-2xl w-8 h-8"></i>
     ),
