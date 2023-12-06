@@ -1,19 +1,15 @@
-// import React from "react";
-
-// const Profile = () => {
-//   return (
-//     <div className="p-6">
-// <h2 className="text-2xl font-bold border-b py-2">Profile</h2>
-//     </div>
-//   );
-// };
-
-// export default Profile;
-
 import React, { useEffect, useState } from "react";
 import Button from "../utils/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { userProfile } from "../redux/actions.js/auth";
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(userProfile());
+  }, []);
+  const currentUser = useSelector((state) => state?.auth?.user);
+  console.log("current user is", currentUser);
   return (
     <div>
       <main className="p-4 space-y-5">
@@ -26,7 +22,7 @@ const Profile = () => {
               <input
                 type="text"
                 className="p-2  bg-gray-100 rounded focus:bg-white focus:border outline-none focus:border-gray-100"
-                // defaultValue={updatedData?.name}
+                defaultValue={currentUser?.name.split(" ")[0]}
                 name="name"
                 // onChange={handleChange}
               />
@@ -36,7 +32,7 @@ const Profile = () => {
               <input
                 type="text"
                 className="p-2  bg-gray-100 rounded focus:bg-white focus:border outline-none focus:border-gray-100"
-                // defaultValue={updatedData?.name}
+                defaultValue={currentUser?.name.split(" ")[1]}
                 name="name"
                 // onChange={handleChange}
               />
@@ -46,12 +42,12 @@ const Profile = () => {
               <input
                 type="text"
                 className="p-2  bg-gray-100 rounded focus:bg-white focus:border outline-none focus:border-gray-100"
-                // defaultValue={updatedData?.email}
+                defaultValue={currentUser?.email}
                 name="email"
                 // onChange={handleChange}
               />
             </div>
-            <div className="grid grid-cols-2 items-center">
+            {/* <div className="grid grid-cols-2 items-center">
               <label className="text-lg">Phone Number</label>
               <input
                 type="numbers"
@@ -60,7 +56,7 @@ const Profile = () => {
                 name="phone"
                 // onChange={handleChange}
               />
-            </div>
+            </div> */}
 
             <div className="flex justify-end">
               <Button title="Update profile" />

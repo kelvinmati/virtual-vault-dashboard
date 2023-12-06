@@ -20,15 +20,30 @@ export const addCategoryFail = () => {
     type: types.ADD_CATEGORY_FAIL,
   };
 };
+
 // register user fail
 export const registerUserFail = () => {
   return {
     type: types.REGISTER_USER_FAIL,
   };
 };
+
+// edit category fail
+export const editCategoryFail = () => {
+  return {
+    type: types.EDIT_CATEGORY_FAIL,
+  };
+};
 // login user fail
 export const loginUserFail = () => {
   return {
     type: types.LOGIN_USER_FAIL,
+  };
+};
+
+// create product fail
+export const createProductFail = () => {
+  return {
+    type: types.CREATE_PRODUCT_FAIL,
   };
 };

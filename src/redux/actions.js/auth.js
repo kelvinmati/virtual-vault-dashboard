@@ -2,7 +2,7 @@ import axios from "axios";
 import * as types from "../constants";
 import { toast } from "react-hot-toast";
 import { clearErrors, getErrors } from "./errors";
-const AUTH_URL = "http://api.virtualvault.lol/api/user";
+const AUTH_URL = "https://api.virtualvault.lol/api/user";
 // const AUTH_URL = "http://localhost:7000/api/user";
 
 // Authentication using the stored token
@@ -90,8 +90,6 @@ export const userLogin = (payload) => async (dispatch) => {
     const response = await axios.post(`${AUTH_URL}/login`, body, config);
     const data = await response.data;
     const token = data.token;
-    console.log("Data is", data);
-    console.log("token is", token);
 
     if (data) {
       dispatch({

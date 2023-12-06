@@ -11,6 +11,7 @@ import {
 } from "../redux/actions.js/categories";
 import { PlusOutlined } from "@ant-design/icons";
 import { Modal, Upload } from "antd";
+import Button from "../utils/Button";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -26,18 +27,23 @@ const Products = () => {
   });
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [buttonLoading, setButtonLoading] = useState(false);
+
+  const error = useSelector((state) => state?.error);
+  useEffect(() => {
+    if (error?.typeId === "CREATE_PRODUCT_FAIL") {
+      setButtonLoading(false);
+    } else {
+      setButtonLoading(false);
+      setOpen(false);
+      reset();
+    }
+  }, [error]);
 
   // fetch all products
-  // useEffect(() => {
-  //   dispatch(getAllProducts(currentPage));
-  // }, [currentPage]);
-  const payload = {
-    page: 1,
-    searchTerm: "",
-  };
   useEffect(() => {
-    dispatch(getAllProducts(payload));
-  }, []);
+    dispatch(getAllProducts(currentPage));
+  }, [currentPage]);
 
   const products = useSelector((state) => state?.products?.products);
 
@@ -46,7 +52,6 @@ const Products = () => {
     dispatch(getTopMostCategories());
   }, []);
   const topMostCategories = useSelector((state) => state?.category?.top_most);
-  // console.log("topMostCategories are", topMostCategories);
 
   // Image upload
   const getBase64 = (file) =>
@@ -62,7 +67,6 @@ const Products = () => {
   const [gallery, setGallery] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [categoryId, setCategoryId] = useState("");
-  // console.log("categoryId is", categoryId);
 
   // get categories by category id
   useEffect(() => {
@@ -71,7 +75,7 @@ const Products = () => {
   const subCategories = useSelector(
     (state) => state?.category?.categories_by_category_id
   );
-  // console.log("subCategories are", subCategories);
+  console.log("subCategories are", subCategories);
   const handleCancel = () => setPreviewOpen(false);
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -101,23 +105,10 @@ const Products = () => {
 
   // add product
   const onSubmit = (data) => {
+    setButtonLoading(true);
     const newData = { ...data, gallery, featured };
-    // console.log("newData is", newData);
     dispatch(createProduct(newData));
   };
-  // title,
-  // sku,
-  // weight,
-  // unit,
-  // price,
-  // currency,
-  // discount,
-  // quantity,
-  // categoryId,
-  // brand,
-  // description,
-  // additionalInformation,
-  // sizes,
 
   return (
     <div className="p-6">
@@ -191,7 +182,7 @@ const Products = () => {
                     const { _id, name } = subCategory;
                     return (
                       <option key={_id} value={_id}>
-                        {name}
+                        {subCategories ? name : "No sub category"}
                       </option>
                     );
                   })}
@@ -370,9 +361,11 @@ const Products = () => {
                 </>
               </div>
               <div>
-                <button className="bg-mainBlue px-5 py-3  text-white rounded-md w-full">
-                  SUBMIT
-                </button>
+                {/* <button className="bg-mainBlue px-5 py-3  text-white rounded-md w-full"> */}
+                {/* SUBMIT */}
+                {/* </button> */}
+
+                <Button title="Submit" loading={buttonLoading} />
               </div>
             </form>
           }

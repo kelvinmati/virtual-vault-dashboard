@@ -13,6 +13,7 @@ import Register from "./components/Register";
 import Auth from "./components/middleware/Auth";
 // import SubCategories from "./components/categories/SubCategories";
 import CategoriesLanding from "./components/categories/CategoriesLanding";
+import ProductDetails from "./components/ProductDetails";
 function App() {
   return (
     <>
@@ -22,6 +23,8 @@ function App() {
             <Route index element={<Home />} />
             <Route path="categories" element={<CategoriesLanding />} />
             <Route path="products" element={<Products />} />
+            <Route path="product/:id" element={<ProductDetails />} />
+
             <Route path="orders" element={<Orders />} />
             <Route path="profile" element={<Profile />} />
             {/* <Route path="sub-categories" element={<SubCategories />} /> */}

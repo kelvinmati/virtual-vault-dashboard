@@ -13,9 +13,11 @@ import Highlighter from "react-highlight-words";
 import Products from "../Products";
 import { abbreviateNumber } from "../../utils/AbbreviateNumber";
 import CommonDrawer from "../../utils/Drawer";
+import { useNavigate } from "react-router-dom";
 const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
   // console.log("current page ", currentPage);
   // console.log("data  is ", data);
+  const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -112,8 +114,8 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
+    onFilterDropdownOpenChange: (open) => {
+      if (open) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
@@ -139,8 +141,9 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
   const handleAtion = (record) => {
     // console.log("record is", record);
     setSelectedRow(record);
+    navigate("/product/" + record._id);
   };
-  // console.log("selectedRow is", selectedRow);
+  console.log("selectedRow is", selectedRow);
   // Function to close the modal
   const handleModalClose = () => {
     setSelectedRow(null);
@@ -232,9 +235,9 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
             </svg>
           </button>
           {/* Modal for displaying the selected row's data */}
-          <div className="">
+          {/* <div className="">
             <Modal
-              visible={!!selectedRow}
+              open={!!selectedRow}
               onCancel={handleModalClose}
               // title="Product Details"
               footer={null}
@@ -253,7 +256,10 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
                     <div className="grid grid-cols-3 gap-3">
                       {selectedRow?.gallery?.map((image) => {
                         return (
-                          <div className="w-full rounded-xl h-20 bg-gray-200 overflow-hidden">
+                          <div
+                            // key={selectedRow._id}
+                            className="w-full rounded-xl h-20 bg-gray-200 overflow-hidden"
+                          >
                             <img
                               className="w-full h-full object-contain"
                               src={image}
@@ -306,7 +312,7 @@ const ProductsTable = ({ data, totalItems, setCurrentPage, currentPage }) => {
                 </div>
               )}
             </Modal>
-          </div>
+          </div> */}
         </div>
       ),
     },

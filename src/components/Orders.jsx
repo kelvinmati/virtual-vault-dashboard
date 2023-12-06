@@ -11,15 +11,18 @@ const Orders = () => {
           <thead>
             <tr className="bg-gray-200  text-gray-700 text-left uppercase text-sm ">
               <th className="p-2"> Order No</th>
-              <th className="p-2">Username</th>
-              <th className="p-2">phone</th>
+              <th className="p-2">name</th>
+              <th className="p-2">Address</th>
+              <th className="p-2">Email</th>
+              <th className="p-2">Quantity</th>
               <th className="p-2">Created At</th>
               <th className="p-2">Action</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order, index) => {
-              const { order_no, username, phone, createdAt } = order;
+              const { order_no, name, address, quantity, email, createdAt } =
+                order;
               const even = index % 2 == 0;
               return (
                 <tr
@@ -32,9 +35,11 @@ const Orders = () => {
                 >
                   <td className="p-2">{order_no}</td>
 
-                  <td className="p-2">{username}</td>
+                  <td className="p-2">{name}</td>
 
-                  <td className="p-2">{phone}</td>
+                  <td className="p-2">{address}</td>
+                  <td className="p-2">{email}</td>
+                  <td className="p-2">{quantity}</td>
 
                   <td className="p-2">
                     {format(new Date(createdAt), "do MMM yyyy")}
@@ -58,20 +63,27 @@ export default Orders;
 const orders = [
   {
     order_no: "VORD1345",
-    username: "John Doe",
-    phone: "0767145097",
+    name: "John Doe",
+    address: "Nairobi",
+    email: "johndoe@gmail.com",
+    quantity: 1,
+
     createdAt: "2023-08-11T01:45:59.982+00:00",
   },
   {
     order_no: "VORD9544",
-    username: "Doris Otieno",
-    phone: "0778149097",
+    name: "Doris Otieno",
+    address: "Mombasa",
+    email: "johndoe@gmail.com",
+    quantity: 6,
     createdAt: "2023-07-20T01:45:59.982+00:00",
   },
   {
     order_no: "VORD980",
-    username: "Alex Stone",
-    phone: "011609245",
+    name: "Alex Stone",
+    address: "Kisumu",
+    email: "johndoe@gmail.com",
+    quantity: 3,
     createdAt: "2023-08-02T01:45:59.982+00:00",
   },
 ];

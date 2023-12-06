@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import format from "date-fns/format";
 import {
   addCategory,
+  editCategory,
   getAllCategories,
+  getSubCategories,
   getTopMostCategories,
 } from "../../redux/actions.js/categories";
 import Button from "../../utils/Button";
@@ -14,13 +16,15 @@ const SubCategories = () => {
   const dispatch = useDispatch();
   // get all categories
   useEffect(() => {
-    dispatch(getAllCategories());
+    dispatch(getSubCategories());
   }, []);
 
   const [open, setOpen] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [category, setCategory] = useState({});
 
-  const categories = useSelector((state) => state?.category?.categories);
+  const categories = useSelector((state) => state?.category?.sub_categories);
   // console.log("categories are", categories);
 
   // get top most categories
@@ -28,7 +32,6 @@ const SubCategories = () => {
     dispatch(getTopMostCategories());
   }, []);
   const topMostCategories = useSelector((state) => state?.category?.top_most);
-  console.log("topMostCategories are", topMostCategories);
   const loading = useSelector((state) => state?.category?.loading);
 
   const error = useSelector((state) => state?.error);
@@ -52,19 +55,55 @@ const SubCategories = () => {
     shouldUnregister: true,
     shouldFocusError: true,
   });
+  // handle add category
+  const handleAddCategory = () => {
+    setOpen(true);
+    setIsEdit(false);
+  };
 
+  // handle edit
+  const handleEdit = (category) => () => {
+    setCategory(category);
+    setOpen(true);
+    setIsEdit(true);
+  };
+
+  // handle change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCategory({ ...category, [name]: value });
+  };
+  // const onSubmit = (data) => {
+  //   setButtonLoading(true);
+  //   dispatch(addCategory(data));
+  //   // console.log("data is", data);
+  // };
   const onSubmit = (data) => {
     setButtonLoading(true);
-    dispatch(addCategory(data));
+    isEdit
+      ? dispatch(editCategory(category._id, category))
+      : dispatch(addCategory(data));
+
     // console.log("data is", data);
   };
 
+  // update button state
+  useEffect(() => {
+    if (error?.typeId === "EDIT_CATEGORY_FAIL") {
+      setButtonLoading(false);
+      setOpen(true);
+    } else {
+      setButtonLoading(false);
+      setOpen(false);
+      reset();
+    }
+  }, [error]);
   return (
     <div className="p-6 space-y-7">
       <div className="flex justify-between items-center border-b py-2">
         <h2 className="text-2xl font-bold ">Sub Categories</h2>
         <button
-          onClick={() => setOpen(true)}
+          onClick={handleAddCategory}
           className="flex  items-center space-x-2  bg-mainBlue text-white px-5 py-2 rounded-md text-lg"
         >
           <span>
@@ -105,7 +144,10 @@ const SubCategories = () => {
                   <td className="p-2">{status}</td>
 
                   <td className="p-2 flex space-x-3">
-                    <i class="cursor-pointer bx bx-sm bx-edit"></i>
+                    <i
+                      onClick={handleEdit(category)}
+                      class="cursor-pointer bx bx-sm bx-edit"
+                    ></i>
                     <i class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
                   </td>
                 </tr>
@@ -129,6 +171,8 @@ const SubCategories = () => {
                 {...register("name", {
                   required: "Sub category name is required!",
                 })}
+                defaultValue={isEdit ? category?.name : null}
+                onChange={handleChange}
               />
               <p className="text-mainRed">{errors?.name?.message}</p>
             </div>
@@ -137,10 +181,14 @@ const SubCategories = () => {
               <select
                 className="p-2 bg-white border rounded"
                 {...register("parentId", {
-                  required: false,
+                  required: "Category is required!",
                 })}
+                defaultValue={isEdit ? category?.parentId : null}
+                onChange={handleChange}
               >
-                <option className="hidden">Select category </option>
+                <option className="hidden">
+                  {isEdit ? category.parentId : "Select category"}
+                </option>
                 {topMostCategories?.map((category) => {
                   const { _id, name } = category;
                   return (
@@ -149,6 +197,7 @@ const SubCategories = () => {
                     </option>
                   );
                 })}
+                <p className="text-mainRed">{errors?.parentId?.message}</p>
               </select>
             </div>
 
@@ -161,10 +210,15 @@ const SubCategories = () => {
                 {...register("description", {
                   required: false,
                 })}
+                defaultValue={isEdit ? category?.description : null}
+                onChange={handleChange}
               />
             </div>
             <div>
-              <Button title="Submit" loading={buttonLoading} />
+              <Button
+                title={isEdit ? "Update" : "Submit"}
+                loading={buttonLoading}
+              />
             </div>
           </form>
         }

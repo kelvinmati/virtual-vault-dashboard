@@ -33,6 +33,12 @@ export const productsReducer = (state = initialState, action) => {
         product: action.payload,
         loading: false,
       };
+    case types.GET_PRODUCT_BY_ID:
+      return {
+        ...state,
+        product: action.payload,
+        loading: false,
+      };
     default:
       return state;
   }

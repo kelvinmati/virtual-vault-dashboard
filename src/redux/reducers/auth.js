@@ -2,7 +2,7 @@ import * as types from "../constants";
 const initialState = {
   isAuthenticated: !!localStorage.getItem("userToken"),
   loading: false,
-  user: null,
+  user: {},
 };
 
 export default function AuthReducer(state = initialState, action) {

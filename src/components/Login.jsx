@@ -25,7 +25,6 @@ const Login = () => {
   const onSubmit = (data) => {
     setButtonLoading(true);
     dispatch(userLogin(data));
-    // console.log(data);
   };
   // control button loading
   useEffect(() => {
@@ -94,14 +93,14 @@ const Login = () => {
           <div>
             <Button width="full" title="Login" loading={buttonLoading} />
           </div>
-          <div>
+          {/* <div>
             <p>
               I don't have an account.{" "}
               <Link to="/register">
                 <span className="text-mainRed">Register</span>
               </Link>
             </p>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

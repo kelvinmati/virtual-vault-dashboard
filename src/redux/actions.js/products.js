@@ -1,7 +1,9 @@
 import axios from "axios";
 import * as types from "../constants";
+import toast from "react-hot-toast";
+import { clearErrors, createProductFail, getErrors } from "./errors";
 
-const PRODUCTS_URL = "http://api.virtualvault.lol/api/products";
+const PRODUCTS_URL = "https://api.virtualvault.lol/api/products";
 // const PRODUCTS_URL = "http://localhost:7000/api/products";
 
 // get all products
@@ -24,15 +26,13 @@ const PRODUCTS_URL = "http://api.virtualvault.lol/api/products";
 //   }
 // };
 
-export const getAllProducts = (payload) => async (dispatch) => {
-  const { page, searchTerm } = payload;
+export const getAllProducts = (page) => async (dispatch) => {
+  // const { page, searchTerm } = payload;
   await dispatch({
     type: types.LOADING,
   });
   try {
-    const response = await axios.get(
-      `${PRODUCTS_URL}?page=${page}&searchTerm=${searchTerm}`
-    );
+    const response = await axios.get(`${PRODUCTS_URL}?page=${page}`);
     const data = response.data;
     // console.log("res", data);
     if (data) {
@@ -81,7 +81,7 @@ export const createProduct = (payload) => async (dispatch) => {
     quantity,
     discount,
     brandId,
-    // categoryId,
+    categoryId,
     sizes,
     gallery,
     featured,
@@ -98,7 +98,7 @@ export const createProduct = (payload) => async (dispatch) => {
     // formData.append("currency", currency);
     formData.append("discount", discount);
     formData.append("brandId", brandId);
-    formData.append("categoryId", "654278a4b8ddcf039bd40838");
+    formData.append("categoryId", categoryId);
     formData.append("sizes", sizes);
 
     // upload multiple images
@@ -115,10 +115,35 @@ export const createProduct = (payload) => async (dispatch) => {
     // dispatch({ type: types.PRODUCT_LOADING });
     const response = await axios.post(`${PRODUCTS_URL}`, formData);
     const data = await response.data;
-    console.log("action data is", data);
     if (data) {
       await dispatch({
         type: types.CREATE_PRODUCT_SUCCESS,
+        payload: data,
+      });
+      toast.success(data.message);
+      dispatch(getAllProducts());
+      dispatch(clearErrors());
+    }
+  } catch (error) {
+    console.log(error);
+    dispatch(getErrors(error.response.data.error, types.CREATE_PRODUCT_FAIL));
+    dispatch(createProductFail());
+    toast.error(error.response.data.message);
+  }
+};
+
+// get product by id
+export const getProductById = (productId) => async (dispatch) => {
+  // await dispatch({
+  //   type: types.LOADING,
+  // });
+  try {
+    const response = await axios.get(`${PRODUCTS_URL}/${productId}`);
+    const data = await response.data;
+    // console.log("action data is", data);
+    if (data) {
+      dispatch({
+        type: types.GET_PRODUCT_BY_ID,
         payload: data,
       });
     }
@@ -126,17 +151,3 @@ export const createProduct = (payload) => async (dispatch) => {
     console.log(error);
   }
 };
-
-// title,
-// sku,
-// weight,
-// unit,
-// price,
-// currency,
-// discount,
-// quantity,
-// categoryId,
-// brand,
-// description,
-// additionalInformation,
-// sizes

@@ -6,20 +6,24 @@ import { useDispatch, useSelector } from "react-redux";
 import format from "date-fns/format";
 import {
   addCategory,
-  getAllCategories,
+  editCategory,
+  getTopMostCategories,
 } from "../../redux/actions.js/categories";
 import Button from "../../utils/Button";
+import { set } from "date-fns";
 const Categories = () => {
   const dispatch = useDispatch();
   // get all categories
   useEffect(() => {
-    dispatch(getAllCategories());
+    dispatch(getTopMostCategories());
   }, []);
 
   const [open, setOpen] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [category, setCategory] = useState({});
 
-  const categories = useSelector((state) => state?.category?.categories);
+  const categories = useSelector((state) => state?.category?.top_most);
   // console.log("categories are", categories);
   const loading = useSelector((state) => state?.category?.loading);
 
@@ -45,18 +49,53 @@ const Categories = () => {
     shouldFocusError: true,
   });
 
+  // handle add category
+  const handleAddCategory = () => {
+    setOpen(true);
+    setIsEdit(false);
+    reset();
+  };
+
+  // handle edit
+  const handleEdit = (category) => () => {
+    setCategory(category);
+    setOpen(true);
+    setIsEdit(true);
+  };
+
+  // handle change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCategory({ ...category, [name]: value });
+  };
+
   const onSubmit = (data) => {
     setButtonLoading(true);
-    dispatch(addCategory(data));
-    console.log("data is", data);
+    isEdit
+      ? dispatch(editCategory(category._id, category))
+      : dispatch(addCategory(data));
+
+    // console.log("data is", data);
   };
+
+  // update button state
+  useEffect(() => {
+    if (error?.typeId === "EDIT_CATEGORY_FAIL") {
+      setButtonLoading(false);
+      setOpen(true);
+    } else {
+      setButtonLoading(false);
+      setOpen(false);
+      reset();
+    }
+  }, [error]);
 
   return (
     <div className="p-6 space-y-7">
       <div className="flex justify-between items-center border-b py-2">
         <h2 className="text-2xl font-bold ">Categories</h2>
         <button
-          onClick={() => setOpen(true)}
+          onClick={handleAddCategory}
           className="flex  items-center space-x-2  bg-mainBlue text-white px-5 py-2 rounded-md text-lg"
         >
           <span>
@@ -97,7 +136,10 @@ const Categories = () => {
                   <td className="p-2">{status}</td>
 
                   <td className="p-2 flex space-x-3">
-                    <i class="cursor-pointer bx bx-sm bx-edit"></i>
+                    <i
+                      onClick={handleEdit(category)}
+                      class="cursor-pointer bx bx-sm bx-edit"
+                    ></i>
                     <i class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
                   </td>
                 </tr>
@@ -109,7 +151,7 @@ const Categories = () => {
       <CommonDrawer
         open={open}
         setOpen={setOpen}
-        drawerTitle="Add new category"
+        drawerTitle={isEdit ? "Edit category" : "Add new category"}
         content={
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col">
@@ -121,29 +163,11 @@ const Categories = () => {
                 {...register("name", {
                   required: "Category name is required!",
                 })}
+                defaultValue={isEdit ? category?.name : null}
+                onChange={handleChange}
               />
               <p className="text-mainRed">{errors?.name?.message}</p>
             </div>
-            {/* <div className="flex flex-col ">
-              <label>Parent Category</label>
-              <select
-                className="p-2 bg-white border rounded"
-                {...register("parentId", {
-                  required: false,
-                })}
-              >
-                <option value="0">Top most</option>
-                {categories?.map((category) => {
-                  const { _id, name } = category;
-                  return (
-                    <option key={_id} value={_id}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div> */}
-
             <div className="flex flex-col">
               <label>Description</label>
               <input
@@ -153,10 +177,15 @@ const Categories = () => {
                 {...register("description", {
                   required: false,
                 })}
+                defaultValue={isEdit ? category?.description : null}
+                onChange={handleChange}
               />
             </div>
             <div>
-              <Button title="Submit" loading={buttonLoading} />
+              <Button
+                title={isEdit ? "Update" : "Submit"}
+                loading={buttonLoading}
+              />
             </div>
           </form>
         }
@@ -166,17 +195,3 @@ const Categories = () => {
 };
 
 export default Categories;
-const categoriess = [
-  {
-    name: "Womens fashion",
-    description: "Represents all clothes under women",
-    createdAt: "2023-06-28T13:21:20.738+00:00",
-  },
-  {
-    name: "Men fashion",
-    description: "Represents all clothes under men",
-    createdAt: "2023-06-28T13:21:20.738+00:00",
-  },
-];
-
-const parentCategories = [];

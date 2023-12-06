@@ -1,7 +1,7 @@
 import * as types from "../constants";
 
 const initialState = {
-  categories: [],
+  sub_categories: [],
   categories_by_category_id: [],
   top_most: [],
   category: [],
@@ -16,6 +16,7 @@ export const categoriesReducer = (state = initialState, action) => {
         loading: true,
       };
     case types.ADD_CATEGORY_SUCCESS:
+    case types.EDIT_CATEGORY_SUCCESS:
       return {
         ...state,
         category: action.payload,
@@ -42,6 +43,12 @@ export const categoriesReducer = (state = initialState, action) => {
       return {
         ...state,
         categories_by_category_id: action.payload,
+        loading: false,
+      };
+    case types.GET_SUB_CATEGORIES:
+      return {
+        ...state,
+        sub_categories: action.payload,
         loading: false,
       };
     default:
