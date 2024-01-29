@@ -47,3 +47,10 @@ export const createProductFail = () => {
     type: types.CREATE_PRODUCT_FAIL,
   };
 };
+
+// update product fail
+export const updateProductFail = () => {
+  return {
+    type: types.UPDATE_PRODUCT_FAIL,
+  };
+};

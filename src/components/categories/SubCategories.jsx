@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import format from "date-fns/format";
 import {
   addCategory,
+  deleteCategory,
   editCategory,
   getAllCategories,
   getSubCategories,
@@ -98,6 +99,15 @@ const SubCategories = () => {
       reset();
     }
   }, [error]);
+
+  // handle delete
+  const handleDelete = (categoryId) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      dispatch(deleteCategory(categoryId))
+    } else {
+      return
+    }
+  }
   return (
     <div className="p-6 space-y-7">
       <div className="flex justify-between items-center border-b py-2">
@@ -148,7 +158,7 @@ const SubCategories = () => {
                       onClick={handleEdit(category)}
                       class="cursor-pointer bx bx-sm bx-edit"
                     ></i>
-                    <i class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
+                    <i onClick={() => handleDelete(category._id)} class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
                   </td>
                 </tr>
               );

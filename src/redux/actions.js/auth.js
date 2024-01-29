@@ -122,7 +122,7 @@ export const userProfile = () => async (dispatch) => {
         type: types.AUTH_USER,
         payload: data,
       });
-      console.log("action current user is", data);
+      // console.log("action current user is", data);
     }
   } catch (error) {
     console.log(error);

@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import CommonDrawer from "../../utils/Drawer";
 import { useDispatch, useSelector } from "react-redux";
 // import { Button } from "antd";
+import { Popconfirm } from "antd";
 import format from "date-fns/format";
 import {
   addCategory,
+  deleteCategory,
   editCategory,
   getTopMostCategories,
 } from "../../redux/actions.js/categories";
@@ -20,13 +22,19 @@ const Categories = () => {
 
   const [open, setOpen] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [deleteButtonLoading, setDeleteButtonLoading] = useState(false)
   const [isEdit, setIsEdit] = useState(false);
   const [category, setCategory] = useState({});
+  const [categoryData, setCategoryData] = useState({
+    name: "",
+    id: "",
+  })
 
+
+  // redux data
   const categories = useSelector((state) => state?.category?.top_most);
-  // console.log("categories are", categories);
   const loading = useSelector((state) => state?.category?.loading);
-
+  console.log("loading", loading)
   const error = useSelector((state) => state?.error);
   useEffect(() => {
     if (error?.typeId === "ADD_CATEGORY_FAIL") {
@@ -78,6 +86,9 @@ const Categories = () => {
     // console.log("data is", data);
   };
 
+
+
+
   // update button state
   useEffect(() => {
     if (error?.typeId === "EDIT_CATEGORY_FAIL") {
@@ -90,7 +101,16 @@ const Categories = () => {
     }
   }, [error]);
 
+  // handle delete
+  const handleDelete = (categoryId) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      dispatch(deleteCategory(categoryId))
+    } else {
+      return
+    }
+  }
   return (
+    <div>
     <div className="p-6 space-y-7">
       <div className="flex justify-between items-center border-b py-2">
         <h2 className="text-2xl font-bold ">Categories</h2>
@@ -140,7 +160,7 @@ const Categories = () => {
                       onClick={handleEdit(category)}
                       class="cursor-pointer bx bx-sm bx-edit"
                     ></i>
-                    <i class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
+                    <i onClick={() => handleDelete(category._id)} class="cursor-pointer bx bx-sm bx-trash text-red-600"></i>
                   </td>
                 </tr>
               );
@@ -190,6 +210,10 @@ const Categories = () => {
           </form>
         }
       />
+      </div>
+
+
+
     </div>
   );
 };

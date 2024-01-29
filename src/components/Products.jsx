@@ -5,7 +5,6 @@ import { createProduct, getAllProducts } from "../redux/actions.js/products";
 import ProductsTable from "./tables/ProductsTable";
 import CommonDrawer from "../utils/Drawer";
 import {
-  getAllCategories,
   getCategoriesByparentId,
   getTopMostCategories,
 } from "../redux/actions.js/categories";
@@ -53,6 +52,7 @@ const Products = () => {
   }, []);
   const topMostCategories = useSelector((state) => state?.category?.top_most);
 
+
   // Image upload
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -68,14 +68,21 @@ const Products = () => {
   const [featured, setFeatured] = useState([]);
   const [categoryId, setCategoryId] = useState("");
 
+
   // get categories by category id
-  useEffect(() => {
-    dispatch(getCategoriesByparentId(categoryId));
-  }, [categoryId]);
+  // useEffect(() => {
+  //   dispatch(getCategoriesByparentId(categoryId));
+  // }, []);
+  const handleGetSubCategories = (e) => {
+    console.log("e.target.value", e.target.value);
+    dispatch(getCategoriesByparentId(e.target.value));
+  }
+
+
   const subCategories = useSelector(
     (state) => state?.category?.categories_by_category_id
   );
-  console.log("subCategories are", subCategories);
+  // console.log("subCategories are", subCategories);
   const handleCancel = () => setPreviewOpen(false);
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -108,6 +115,7 @@ const Products = () => {
     setButtonLoading(true);
     const newData = { ...data, gallery, featured };
     dispatch(createProduct(newData));
+    // console.log("newData is", newData);
   };
 
   return (
@@ -140,7 +148,7 @@ const Products = () => {
           content={
             <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col">
-                <label className="font-bold">Name</label>
+                <label className="font-bold">Name <span className="text-mainRed" >*</span></label>
                 <input
                   type="text"
                   placeholder="product  name"
@@ -152,10 +160,13 @@ const Products = () => {
                 <p className="text-mainRed">{errors?.title?.message}</p>
               </div>
               <div className="flex flex-col">
-                <label className="font-bold">Category</label>
+                <label className="font-bold">Category <span className="text-mainRed" >*</span> </label>
                 <select
-                  onChange={(e) => setCategoryId(e.target.value)}
                   className="p-2 bg-white border rounded focus:border-mainBlue outline-none"
+                  {...register("categoryId", {
+                    required: "Category  is required!",
+                  })}
+                  onChange={handleGetSubCategories}
                 >
                   <option className="hidden"> Select category</option>
                   {topMostCategories?.map((topMostCategory) => {
@@ -167,27 +178,31 @@ const Products = () => {
                     );
                   })}
                 </select>
+                <p className="text-mainRed">{errors?.categoryId?.message}</p>
               </div>
 
               <div className="flex flex-col">
-                <label>Sub category</label>
+                <label>Sub category <span className="text-mainRed" >*</span></label>
                 <select
-                  {...register("categoryId", {
+                  {...register("subCategoryId", {
                     required: "sub category  is required!",
                   })}
                   className="p-2 bg-white border rounded focus:border-mainBlue outline-none"
                 >
                   <option className="hidden"> Select sub category</option>
-                  {subCategories?.map((subCategory) => {
-                    const { _id, name } = subCategory;
-                    return (
-                      <option key={_id} value={_id}>
-                        {subCategories ? name : "No sub category"}
-                      </option>
-                    );
-                  })}
+
+                  {
+                    subCategories?.length > 0 ? subCategories?.map((subCategory) => {
+                      const { _id, name } = subCategory;
+                      return (
+                        <option key={_id} value={_id}>
+                          {name}
+                        </option>
+                      );
+                    }) : <option>No sub category</option>
+                  }
                 </select>
-                <p className="text-mainRed">{errors?.categoryId?.message}</p>
+                <p className="text-mainRed">{errors?.subCategoryId?.message}</p>
               </div>
               <div className="flex flex-col">
                 <label className="font-bold">Brand</label>
@@ -242,6 +257,7 @@ const Products = () => {
                     fileList={featured}
                     onPreview={handlePreview}
                     onChange={handleFeaturedChange}
+                    beforeUpload={() => false}
                   >
                     {featured.length >= 1 ? null : uploadButton}
                   </Upload>
@@ -341,8 +357,9 @@ const Products = () => {
                     fileList={gallery}
                     onPreview={handlePreview}
                     onChange={handleChange}
+                    beforeUpload={() => false}
                   >
-                    {gallery.length >= 4 ? null : uploadButton}
+                    {gallery.length >= 3 ? null : uploadButton}
                   </Upload>
                   <Modal
                     open={previewOpen}
@@ -388,4 +405,8 @@ const units = [
   { _id: "kg", name: "Kilograms" },
   { _id: "g", name: "Grams" },
   { _id: "t", name: "Tonnes" },
+  { _id: "l", name: "Liters" },
+  { _id: "ml", name: "milliliters" },
+
+
 ];

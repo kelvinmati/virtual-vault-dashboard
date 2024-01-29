@@ -4,7 +4,7 @@ const initialState = {
   sub_categories: [],
   categories_by_category_id: [],
   top_most: [],
-  category: [],
+  category: {},
   loading: false,
 };
 
@@ -26,6 +26,12 @@ export const categoriesReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+      };
+    case types.DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        category: action.payload
       };
     case types.GET_ALL_CATEGORIES:
       return {

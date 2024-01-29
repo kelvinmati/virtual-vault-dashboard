@@ -8,6 +8,7 @@ import {
   getErrors,
 } from "./errors";
 import { authToken } from "./auth";
+import { get } from "react-hook-form";
 
 const CATEGORY_URL = "https://api.virtualvault.lol/api/categories";
 // const CATEGORY_URL = "http://localhost:7000/api/categories";
@@ -36,13 +37,14 @@ export const addCategory = (payload) => async (dispatch) => {
       });
       toast.success(data.message);
       dispatch(getTopMostCategories());
+      dispatch(getSubCategories()); 
       dispatch(clearErrors());
     }
   } catch (error) {
-    console.log(error);
-    dispatch(getErrors(error.response.data.error, types.ADD_CATEGORY_FAIL));
+    dispatch(getErrors(error.response.data.message, types.ADD_CATEGORY_FAIL));
     dispatch(addCategoryFail());
-    toast.error(error.response.data.error);
+    toast.error(error.response.data.message);
+
   }
 };
 
@@ -100,8 +102,15 @@ export const getCategoriesByparentId = (parentId) => async (dispatch) => {
         payload: data,
       });
     }
+
+
   } catch (error) {
     console.log(error);
+    dispatch({
+      type: types.GET_CATEGORIES_BY_PARENT_ID,
+      payload: [], // Set an empty array to indicate no categories
+    });
+    toast.error(error.response.data.message);
   }
 };
 
@@ -122,6 +131,7 @@ export const getSubCategories = () => async (dispatch) => {
     }
   } catch (error) {
     console.log(error);
+
   }
 };
 
@@ -160,8 +170,34 @@ export const editCategory = (id, payload) => async (dispatch) => {
   } catch (error) {
     console.log(error);
 
-    dispatch(getErrors(error.response.data.error, types.EDIT_CATEGORY_FAIL));
+    dispatch(getErrors(error.response.data.message, types.EDIT_CATEGORY_FAIL));
     dispatch(editCategoryFail());
     toast.error(error.response.data.message);
   }
 };
+
+// delete category
+export const deleteCategory = (categoryId) => async (dispatch) => {
+  try {
+    const response = await axios.delete(`${CATEGORY_URL}/${categoryId}`, authToken())
+    const data = await response.data;
+    if (data) {
+      dispatch({
+        type: types.DELETE_CATEGORY_SUCCESS,
+        payload: data,
+      });
+      toast.success(data.message);
+      dispatch(getTopMostCategories());
+      dispatch(getSubCategories());
+      // dispatch(clearErrors());
+
+    }
+  } catch (error) {
+    console.log(error);
+    // dispatch(getErrors(error.response.data.error, types.DELETE_CATEGORY_FAIL));
+
+    toast.error(error.response.data.message);
+
+  }
+
+}

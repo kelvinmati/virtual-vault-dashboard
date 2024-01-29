@@ -3,7 +3,6 @@ import * as types from "../constants";
 const initialState = {
   products: [],
   product: {},
-
   loading: false,
   search_results: [],
 };
@@ -33,7 +32,20 @@ export const productsReducer = (state = initialState, action) => {
         product: action.payload,
         loading: false,
       };
+
     case types.GET_PRODUCT_BY_ID:
+      return {
+        ...state,
+        product: action.payload,
+        loading: false,
+      };
+    case types.UPDATE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        product: action.payload,
+        loading: false,
+      };
+    case types.DELETE_PRODUCT_SUCCESS:
       return {
         ...state,
         product: action.payload,

@@ -1,18 +1,134 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import OrderTable from "./tables/Table";
 import { abbreviateNumber } from "../utils/AbbreviateNumber";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { userProfile } from "../redux/actions.js/auth";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { get } from "react-hook-form";
 // import OrderTable from "./Table";
 
 const Home = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state);
-  console.log("currentUser is", currentUser);
+  // console.log("currentUser is", currentUser);
   useEffect(() => {
     dispatch(userProfile());
   }, []);
+
+  const [statistics, setStatistics] = useState({})
+  const getStatistics = async () => {
+    try {
+
+      const response = await axios.get("https://api.virtualvault.lol/api/statistics")
+      const data = await response.data
+      setStatistics(data.data)
+
+
+    } catch (error) {
+      console.log(error)
+      toast.error("Error getting statistics")
+    }
+
+  }
+  useEffect(() => {
+    getStatistics()
+  }, [])
+
+  const stats = [
+    {
+      id: 1,
+      name: "Total orders",
+      icon: (
+        <svg
+          className="w-6 h-6 text-center text-green-600"
+          stroke="currentColor"
+          fill="none"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          height="1em"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx={9} cy={21} r={1} />
+          <circle cx={20} cy={21} r={1} />
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        </svg>
+      ),
+      background: "bg-green-200",
+      // value: statistics?.totalOrders,
+      value: statistics?.totalOrders,
+      percentage: "14%",
+      year: "2020",
+    },
+    {
+      id: 2,
+      name: "Categories",
+      icon: (
+        <i className="bx bx-purchase-tag text-orange-600 text-center text-2xl w-8 h-8"></i>
+      ),
+      background: "bg-orange-200",
+      value: statistics?.totalCategories,
+      percentage: "25%",
+      year: "2022",
+    },
+    {
+      id: 3,
+      name: "Sub Categories",
+      icon: (
+        <i className="bx bx-purchase-tag text-orange-600 text-center text-2xl w-8 h-8"></i>
+      ),
+      background: "bg-orange-200",
+      value: statistics?.totalSubCategories,
+      percentage: "25%",
+      year: "2022",
+    },
+    {
+      id: 4,
+      name: "Products",
+      icon: (
+        <i className="bx bxl-product-hunt text-blue-600 text-center text-2xl w-8 h-8"></i>
+      ),
+      background: "bg-blue-200",
+      value: statistics?.totalProducts,
+      percentage: "5%",
+      year: "2021",
+    },
+  ];
+
+  const orders = [
+    {
+      order_no: "VORD1345",
+      name: "John Doe",
+      address: "Nairobi",
+      email: "johndoe@gmail.com",
+      quantity: 1,
+
+      createdAt: "2023-08-11T01:45:59.982+00:00",
+    },
+    {
+      order_no: "VORD9544",
+      name: "Doris Otieno",
+      address: "Mombasa",
+      email: "johndoe@gmail.com",
+      quantity: 6,
+      createdAt: "2023-07-20T01:45:59.982+00:00",
+    },
+    {
+      order_no: "VORD980",
+      name: "Alex Stone",
+      address: "Kisumu",
+      email: "johndoe@gmail.com",
+      quantity: 3,
+      createdAt: "2023-08-02T01:45:59.982+00:00",
+    },
+  ];
+
+
+  console.log("statistics", statistics)
   return (
     <div className="p-6 space-y-10">
       <h2 className="text-2xl font-bold border-b py-2">Admin Dashboard</h2>
@@ -96,92 +212,4 @@ const Home = () => {
 
 export default Home;
 
-const stats = [
-  {
-    id: 1,
-    name: "Total orders",
-    icon: (
-      <svg
-        className="w-6 h-6 text-center text-green-600"
-        stroke="currentColor"
-        fill="none"
-        strokeWidth={2}
-        viewBox="0 0 24 24"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        height="1em"
-        width="1em"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx={9} cy={21} r={1} />
-        <circle cx={20} cy={21} r={1} />
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-      </svg>
-    ),
-    background: "bg-green-200",
-    value: 100221,
-    percentage: "14%",
-    year: "2020",
-  },
-  {
-    id: 2,
-    name: "Categories",
-    icon: (
-      <i className="bx bx-purchase-tag text-orange-600 text-center text-2xl w-8 h-8"></i>
-    ),
-    background: "bg-orange-200",
-    value: 18695,
-    percentage: "25%",
-    year: "2022",
-  },
-  {
-    id: 3,
-    name: "Sub Categories",
-    icon: (
-      <i className="bx bx-purchase-tag text-orange-600 text-center text-2xl w-8 h-8"></i>
-    ),
-    background: "bg-orange-200",
-    value: 18695,
-    percentage: "25%",
-    year: "2022",
-  },
-  {
-    id: 4,
-    name: "Products",
-    icon: (
-      <i className="bx bxl-product-hunt text-blue-600 text-center text-2xl w-8 h-8"></i>
-    ),
-    background: "bg-blue-200",
-    value: 4096945,
-    percentage: "5%",
-    year: "2021",
-  },
-];
 
-const orders = [
-  {
-    order_no: "VORD1345",
-    name: "John Doe",
-    address: "Nairobi",
-    email: "johndoe@gmail.com",
-    quantity: 1,
-
-    createdAt: "2023-08-11T01:45:59.982+00:00",
-  },
-  {
-    order_no: "VORD9544",
-    name: "Doris Otieno",
-    address: "Mombasa",
-    email: "johndoe@gmail.com",
-    quantity: 6,
-    createdAt: "2023-07-20T01:45:59.982+00:00",
-  },
-  {
-    order_no: "VORD980",
-    name: "Alex Stone",
-    address: "Kisumu",
-    email: "johndoe@gmail.com",
-    quantity: 3,
-    createdAt: "2023-08-02T01:45:59.982+00:00",
-  },
-];
