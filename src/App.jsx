@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Landing from "./components/Landing";
@@ -14,7 +14,28 @@ import Auth from "./components/middleware/Auth";
 // import SubCategories from "./components/categories/SubCategories";
 import CategoriesLanding from "./components/categories/CategoriesLanding";
 import ProductDetails from "./components/ProductDetails";
+import { regSw, subscribe } from "./helper.js";
 function App() {
+  // const [hasRegistered, setHasRegistered] = useState(false);
+  const registerAndSubscribeCalled = useRef(false);
+
+  async function registerAndSubscribe() {
+    try {
+      const serviceWorkerReg = await regSw();
+      await subscribe(serviceWorkerReg);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // Run the function only once using useEffect
+  useEffect(() => {
+    if (!registerAndSubscribeCalled.current) {
+      registerAndSubscribeCalled.current = true;
+      registerAndSubscribe();
+    }
+  }, []);
+
   return (
     <>
       <Routes>
@@ -36,6 +57,11 @@ function App() {
         {/* <Route path="/editor" element={<Editor />} /> */}
       </Routes>
       <Toaster />
+      {/* <div className="p-2 bg-red-800 text-white">
+        <button onClick={registerAndSubscribe}>
+          subscribe for push notifications
+        </button>
+      </div> */}
     </>
   );
 }
