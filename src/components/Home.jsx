@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // import OrderTable from "./tables/Table";
 import { abbreviateNumber } from "../utils/AbbreviateNumber";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,8 +8,31 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { get } from "react-hook-form";
 // import OrderTable from "./Table";
-
+// import { regSw, subscribe } from "../helper";
 const Home = () => {
+
+  // const registerAndSubscribeCalled = useRef(false);
+
+  // async function registerAndSubscribe() {
+  //   try {
+  //     const serviceWorkerReg = await regSw();
+  //     const subscription = await subscribe(serviceWorkerReg);
+  //     // console.log('subscription is', subscription)
+  //     // localStorage.setItem('subxn', subscription.data.newSubscription.subscription_id);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  // // Run the function only once using useEffect
+  // useEffect(() => {
+  //   if (!registerAndSubscribeCalled.current) {
+  //     registerAndSubscribeCalled.current = true;
+  //     registerAndSubscribe();
+  //   }
+  // }, []);
+
+
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state);
   // console.log("currentUser is", currentUser);
